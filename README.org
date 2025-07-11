@@ -6,5 +6,6 @@ A simple BMC for AIGER.
 #+begin_src sh
 git clone https://github.com/Froleyks/bmc
 make -C bmc
-./bmc/bin/bmc
+./master/bmc --version
+./development/bmc --version
 #+end_src
