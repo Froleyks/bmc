@@ -1,0 +1,3 @@
+Don't execute these scripts.
+They are copied to the build directory by cmake, run them from there.
+

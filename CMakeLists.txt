@@ -1,0 +1,35 @@
+cmake_minimum_required(VERSION 3.10)
+project(bmc VERSION 1.1.0)
+set(CMAKE_CXX_STANDARD 23)
+file(GLOB headers CONFIGURE_DEPENDS src/*.hpp)
+file(GLOB sources CONFIGURE_DEPENDS src/*.cpp)
+
+option(ASAN "Build with address sanitizer" OFF)
+option(LTO "Enable Link-Time Optimization" ON)
+option(STATIC "Build static binary" OFF)
+option(FUZZ "Setup fuzzing" OFF)
+include(util.cmake)
+include(deps/aiger/aiger_lib.cmake)
+include(deps/cadical/cadical_lib.cmake)
+
+if(FUZZ)
+  include(deps/aiger/aiger_bin.cmake)
+  file(GLOB scripts CONFIGURE_DEPENDS scripts/*.in)
+  add_scripts(${scripts})
+endif()
+
+add_executable(bmc ${sources})
+target_compile_options(bmc PRIVATE -DGITID="${GIT_ID}")
+target_compile_options(bmc PRIVATE -DVERSION="${PROJECT_VERSION}")
+install(TARGETS bmc)
+
+target_link_libraries(bmc aiger)
+
+add_dependencies(bmc cadical)
+target_include_directories(bmc PRIVATE ${CADICAL_INCLUDE_DIR})
+target_link_libraries(bmc ${CADICAL_LIB})
+
+if(STATIC)
+  set(BUILD_SHARED_LIBS OFF)
+  set_target_properties(bmc PROPERTIES LINK_FLAGS "-static")
+endif()

@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+bin="$(cd -- "$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")" && pwd -P)"
+@PROJECT_NAME@="$bin"/@PROJECT_NAME@
+for i in @PROJECT_NAME@; do
+    [ ! -x "${!i}" ] && echo "$(basename "$0"): missing executable $i (${!i})" >&2 && exit 1
+    "${!i}" >/dev/null || exit
+done
+[ $# -lt 1 ] && echo "usage: $(basename "$0") " && exit 0
+mkdir -p ${TMPDIR:-/tmp}/froleyks-@PROJECT_NAME@
+TMP=$(mktemp -d "${TMPDIR:-/tmp}"/froleyks-@PROJECT_NAME@/$(basename "$0")-XXXXXXXX)
+trap 'rm -rf "${TMP}"; exit' EXIT HUP INT QUIT TERM

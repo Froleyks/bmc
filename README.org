@@ -1,0 +1,10 @@
+* BMC
+
+A simple BMC for AIGER.
+
+** Quickstart
+#+begin_src sh
+git clone https://github.com/Froleyks/bmc
+make -C bmc
+./bmc/bin/bmc
+#+end_src
